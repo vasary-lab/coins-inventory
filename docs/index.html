@@ -1,0 +1,417 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Coin Inventory Service</title>
+  <meta name="description" content="Coin Inventory Service: PHP 8.4 and Symfony 8.1 inventory microservice with REST API, MCP tools, XAUS valuation, Redis storage, and Helm deployment.">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            ink: '#18181b',
+            steel: '#475569',
+            mint: '#0f766e',
+            leaf: '#16a34a',
+            signal: '#f59e0b',
+            loss: '#dc2626'
+          },
+          boxShadow: {
+            panel: '0 18px 50px rgba(24, 24, 27, 0.10)'
+          }
+        }
+      }
+    };
+  </script>
+</head>
+<body class="bg-[#f8fafc] text-ink antialiased">
+  <header class="relative min-h-[92vh] overflow-hidden bg-[#f8fafc]">
+    <canvas id="market-canvas" class="absolute inset-0 h-full w-full" aria-hidden="true"></canvas>
+    <div class="absolute inset-0 bg-white/78"></div>
+
+    <nav class="relative z-10 mx-auto flex max-w-7xl items-center justify-between px-6 py-6">
+      <a href="#top" class="text-sm font-semibold uppercase tracking-[0.22em] text-mint">Coin Inventory</a>
+      <div class="hidden items-center gap-6 text-sm font-medium text-steel sm:flex">
+        <a href="#capabilities" class="hover:text-ink">Capabilities</a>
+        <a href="#profitability" class="hover:text-ink">Profitability</a>
+        <a href="#mcp" class="hover:text-ink">MCP</a>
+        <a href="#changelog" class="hover:text-ink">Changelog</a>
+      </div>
+    </nav>
+
+    <section id="top" class="relative z-10 mx-auto grid max-w-7xl items-center gap-12 px-6 pb-20 pt-12 lg:grid-cols-[1.02fr_0.98fr] lg:pt-20">
+      <div class="max-w-3xl">
+        <p class="mb-5 inline-flex items-center gap-2 rounded-full border border-mint/20 bg-white px-4 py-2 text-sm font-semibold text-mint shadow-sm">
+          PHP 8.4 · Symfony 8.1 · Redis · MCP
+        </p>
+        <h1 class="text-5xl font-black leading-[1.02] tracking-normal text-ink sm:text-6xl lg:text-7xl">
+          Coin Inventory Service
+        </h1>
+        <p class="mt-7 max-w-2xl text-lg leading-8 text-steel">
+          An investment coin portfolio service for tracking acquisition cost, live metal value,
+          and profit or loss per coin. It stores the collection in Redis, values gold with XAUS
+          spot prices, exposes REST endpoints, and gives AI assistants the same capabilities through
+          Symfony MCP tools.
+        </p>
+        <div class="mt-9 flex flex-wrap gap-3">
+          <a href="#profitability" class="inline-flex h-12 items-center justify-center rounded-md bg-ink px-5 text-sm font-bold text-white shadow-panel hover:bg-black">
+            View valuation model
+          </a>
+          <a href="#mcp" class="inline-flex h-12 items-center justify-center rounded-md border border-zinc-300 bg-white px-5 text-sm font-bold text-ink hover:border-ink">
+            Explore MCP tools
+          </a>
+          <a href="#changelog" class="inline-flex h-12 items-center justify-center rounded-md border border-zinc-300 bg-white px-5 text-sm font-bold text-ink hover:border-ink">
+            Release history
+          </a>
+        </div>
+      </div>
+
+      <div class="rounded-lg border border-zinc-200 bg-white p-5 shadow-panel">
+        <div class="flex items-start justify-between gap-4">
+          <div>
+            <p class="text-sm font-bold uppercase tracking-[0.18em] text-steel">Sample Portfolio</p>
+            <h2 class="mt-2 text-2xl font-black text-ink">Current metal value</h2>
+          </div>
+          <span class="rounded-full bg-loss/10 px-3 py-1 text-sm font-bold text-loss">-74.74%</span>
+        </div>
+        <div class="mt-6 h-72">
+          <canvas id="portfolio-chart" class="h-full w-full" aria-label="Sample portfolio valuation chart"></canvas>
+        </div>
+        <div class="mt-5 grid grid-cols-3 gap-3 text-sm">
+          <div class="rounded-md bg-zinc-50 p-3">
+            <p class="font-semibold text-steel">Purchase</p>
+            <p class="mt-1 text-lg font-black">EUR 5,950.00</p>
+          </div>
+          <div class="rounded-md bg-zinc-50 p-3">
+            <p class="font-semibold text-steel">Market</p>
+            <p class="mt-1 text-lg font-black">EUR 1,503.04</p>
+          </div>
+          <div class="rounded-md bg-zinc-50 p-3">
+            <p class="font-semibold text-steel">P/L</p>
+            <p class="mt-1 text-lg font-black text-loss">-4,446.96</p>
+          </div>
+        </div>
+        <p class="mt-4 text-xs leading-5 text-steel">
+          Example numbers are based on repository fixtures and are informational, not investment advice.
+        </p>
+      </div>
+    </section>
+  </header>
+
+  <main>
+    <section id="capabilities" class="border-y border-zinc-200 bg-white py-16">
+      <div class="mx-auto max-w-7xl px-6 py-16">
+        <div class="max-w-3xl">
+          <p class="text-sm font-bold uppercase tracking-[0.18em] text-mint">Investment ledger</p>
+          <h2 class="mt-3 text-4xl font-black tracking-normal text-ink">A small portfolio engine for physical gold coins.</h2>
+          <p class="mt-5 text-base leading-7 text-steel">
+            The service keeps the operational details boring on purpose: deterministic coin records,
+            cached market data, transparent calculation rules, and a clean report that answers the
+            investor question first.
+          </p>
+        </div>
+        <div class="mt-10 grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+          <article class="rounded-lg border border-zinc-200 bg-[#fbfdff] p-5">
+            <p class="text-2xl font-black text-mint">01</p>
+            <h3 class="mt-4 text-lg font-black">Coin Registry</h3>
+            <p class="mt-3 text-sm leading-6 text-steel">Tracks purchase price, currency, purity, weight, country, and purchase date for each coin.</p>
+          </article>
+          <article class="rounded-lg border border-zinc-200 bg-[#fbfdff] p-5">
+            <p class="text-2xl font-black text-signal">02</p>
+            <h3 class="mt-4 text-lg font-black">XAUS Valuation</h3>
+            <p class="mt-3 text-sm leading-6 text-steel">Fetches gold spot price per gram and adjusts it by karat before multiplying by pure metal weight.</p>
+          </article>
+          <article class="rounded-lg border border-zinc-200 bg-[#fbfdff] p-5">
+            <p class="text-2xl font-black text-leaf">03</p>
+            <h3 class="mt-4 text-lg font-black">Profitability</h3>
+            <p class="mt-3 text-sm leading-6 text-steel">Answers whether the portfolio is in profit and shows the delta for every coin.</p>
+          </article>
+          <article class="rounded-lg border border-zinc-200 bg-[#fbfdff] p-5">
+            <p class="text-2xl font-black text-loss">04</p>
+            <h3 class="mt-4 text-lg font-black">MCP Tools</h3>
+            <p class="mt-3 text-sm leading-6 text-steel">Exposes the same application use cases to AI clients through Symfony MCP Bundle.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="profitability" class="bg-[#f8fafc] py-16">
+      <div class="mx-auto grid max-w-7xl gap-10 px-6 lg:grid-cols-[0.92fr_1.08fr]">
+        <div>
+          <p class="text-sm font-bold uppercase tracking-[0.18em] text-mint">Profitability endpoint</p>
+          <h2 class="mt-3 text-4xl font-black tracking-normal text-ink">Know which coins are up, down, and by how much.</h2>
+          <p class="mt-5 text-base leading-7 text-steel">
+            The report compares purchase value with live metal value. Totals are grouped by currency,
+            because each coin is valued in its purchase currency.
+          </p>
+          <div class="mt-7 rounded-lg border border-zinc-200 bg-white p-5 shadow-sm">
+            <p class="text-sm font-bold text-steel">REST endpoint</p>
+            <code class="mt-3 block rounded-md bg-ink px-4 py-3 text-sm font-semibold text-white">GET /api/inventory/profitability</code>
+          </div>
+        </div>
+
+        <div class="overflow-hidden rounded-lg border border-zinc-200 bg-white shadow-panel">
+          <div class="overflow-x-auto">
+            <div class="min-w-[620px]">
+              <div class="grid grid-cols-[1.3fr_1fr_1fr_1fr] border-b border-zinc-200 bg-zinc-50 px-5 py-3 text-xs font-bold uppercase tracking-[0.16em] text-steel">
+                <span>Coin</span>
+                <span>Purchase</span>
+                <span>Market</span>
+                <span>P/L</span>
+              </div>
+              <div id="profit-table" class="divide-y divide-zinc-100"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="border-y border-zinc-200 bg-white py-16">
+      <div class="mx-auto grid max-w-7xl gap-10 px-6 lg:grid-cols-[0.9fr_1.1fr]">
+        <div>
+          <p class="text-sm font-bold uppercase tracking-[0.18em] text-mint">Valuation flow</p>
+          <h2 class="mt-3 text-4xl font-black tracking-normal text-ink">From coin specs to portfolio signal.</h2>
+          <p class="mt-5 text-base leading-7 text-steel">
+            Every report follows the same path: get the XAUS gram price, adjust it by karat,
+            multiply by pure metal weight, then compare it with the original purchase price.
+          </p>
+        </div>
+        <div class="grid gap-3 sm:grid-cols-2">
+          <div class="rounded-lg border border-zinc-200 bg-[#fbfdff] p-5">
+            <p class="text-xs font-bold uppercase tracking-[0.18em] text-steel">Formula</p>
+            <p class="mt-3 font-mono text-sm leading-6 text-ink">spotGram * karat / 24 * pureMetalWeight</p>
+          </div>
+          <div class="rounded-lg border border-zinc-200 bg-[#fbfdff] p-5">
+            <p class="text-xs font-bold uppercase tracking-[0.18em] text-steel">Pure metal</p>
+            <p class="mt-3 font-mono text-sm leading-6 text-ink">weight * purity / 100</p>
+          </div>
+          <div class="rounded-lg border border-zinc-200 bg-[#fbfdff] p-5">
+            <p class="text-xs font-bold uppercase tracking-[0.18em] text-steel">Cache</p>
+            <p class="mt-3 text-sm leading-6 text-steel">Market requests are cached through Guzzle for one hour.</p>
+          </div>
+          <div class="rounded-lg border border-zinc-200 bg-[#fbfdff] p-5">
+            <p class="text-xs font-bold uppercase tracking-[0.18em] text-steel">Currency</p>
+            <p class="mt-3 text-sm leading-6 text-steel">Each coin is valued in the same currency it was purchased in.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="mcp" class="bg-white py-16">
+      <div class="mx-auto max-w-7xl px-6">
+        <div class="grid gap-10 lg:grid-cols-[1fr_1fr]">
+          <div>
+            <p class="text-sm font-bold uppercase tracking-[0.18em] text-mint">Agent interface</p>
+            <h2 class="mt-3 text-4xl font-black tracking-normal text-ink">REST for applications, MCP for assistants.</h2>
+            <p class="mt-5 text-base leading-7 text-steel">
+              Controllers and MCP tools share the same application use cases, so automation and human-facing
+              clients operate against one business model.
+            </p>
+          </div>
+          <div class="grid gap-3">
+            <div class="rounded-lg border border-zinc-200 bg-[#fbfdff] p-4">
+              <code class="text-sm font-black text-ink">coins_inventory_list</code>
+              <p class="mt-2 text-sm text-steel">Lists coins with current calculated metal values.</p>
+            </div>
+            <div class="rounded-lg border border-zinc-200 bg-[#fbfdff] p-4">
+              <code class="text-sm font-black text-ink">coins_inventory_place</code>
+              <p class="mt-2 text-sm text-steel">Adds a coin using the same validation rules as the REST API.</p>
+            </div>
+            <div class="rounded-lg border border-zinc-200 bg-[#fbfdff] p-4">
+              <code class="text-sm font-black text-ink">coins_inventory_profitability</code>
+              <p class="mt-2 text-sm text-steel">Returns per-coin and portfolio profit/loss grouped by currency.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="changelog" class="border-t border-zinc-200 bg-[#f8fafc] py-16">
+      <div class="mx-auto max-w-7xl px-6">
+        <div class="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
+          <div class="max-w-3xl">
+            <p class="text-sm font-bold uppercase tracking-[0.18em] text-mint">Release timeline</p>
+            <h2 class="mt-3 text-4xl font-black tracking-normal text-ink">Project momentum, built into the page.</h2>
+            <p class="mt-5 text-base leading-7 text-steel">
+              The public page carries the current product story and the release trail: portfolio restore,
+              testing, Symfony 8.1, MCP tools, XAUS valuation, and profitability reporting.
+            </p>
+          </div>
+          <a href="CHANGELOG.md" class="inline-flex h-11 items-center justify-center rounded-md border border-zinc-300 bg-white px-4 text-sm font-bold text-ink hover:border-ink">
+            Open full changelog
+          </a>
+        </div>
+
+        <div class="mt-10 grid gap-4 lg:grid-cols-3">
+          <article class="rounded-lg border border-zinc-200 bg-white p-5 shadow-sm">
+            <div class="flex items-center justify-between gap-4">
+              <h3 class="text-xl font-black">1.2.0</h3>
+              <span class="rounded-full bg-leaf/10 px-3 py-1 text-sm font-bold text-leaf">current</span>
+            </div>
+            <p class="mt-2 text-sm font-semibold text-steel">July 26, 2026</p>
+            <ul class="mt-5 space-y-3 text-sm leading-6 text-steel">
+              <li>MCP tools for list, place, and profitability.</li>
+              <li>XAUS market valuation without a hardcoded GoldAPI token.</li>
+              <li>Profit/loss report per coin and totals by currency.</li>
+            </ul>
+          </article>
+          <article class="rounded-lg border border-zinc-200 bg-white p-5 shadow-sm">
+            <div class="flex items-center justify-between gap-4">
+              <h3 class="text-xl font-black">1.1.1</h3>
+              <span class="rounded-full bg-signal/10 px-3 py-1 text-sm font-bold text-signal">quality</span>
+            </div>
+            <p class="mt-2 text-sm font-semibold text-steel">March 26, 2025</p>
+            <ul class="mt-5 space-y-3 text-sm leading-6 text-steel">
+              <li>Behavior test coverage.</li>
+              <li>Readme improvements.</li>
+              <li>Code style and dependency maintenance.</li>
+            </ul>
+          </article>
+          <article class="rounded-lg border border-zinc-200 bg-white p-5 shadow-sm">
+            <div class="flex items-center justify-between gap-4">
+              <h3 class="text-xl font-black">1.1.0</h3>
+              <span class="rounded-full bg-mint/10 px-3 py-1 text-sm font-bold text-mint">inventory</span>
+            </div>
+            <p class="mt-2 text-sm font-semibold text-steel">February 16, 2025</p>
+            <ul class="mt-5 space-y-3 text-sm leading-6 text-steel">
+              <li>Restore command for a prepared coin collection.</li>
+              <li>Foundation for repeatable demo portfolios.</li>
+              <li>Operational path for resetting inventory state.</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section class="border-t border-zinc-200 bg-[#f8fafc] py-14">
+      <div class="mx-auto grid max-w-7xl gap-4 px-6 md:grid-cols-3">
+        <a href="https://github.com/Vasary/coins-inventory" class="rounded-lg border border-zinc-200 bg-white p-5 font-bold text-ink shadow-sm hover:border-ink">
+          GitHub repository
+          <span class="mt-2 block text-sm font-medium text-steel">Source code, issues, and releases.</span>
+        </a>
+        <a href="CHANGELOG.md" class="rounded-lg border border-zinc-200 bg-white p-5 font-bold text-ink shadow-sm hover:border-ink">
+          Changelog
+          <span class="mt-2 block text-sm font-medium text-steel">Release notes and version history.</span>
+        </a>
+        <a href="https://xaus.com/api/" class="rounded-lg border border-zinc-200 bg-white p-5 font-bold text-ink shadow-sm hover:border-ink">
+          XAUS API
+          <span class="mt-2 block text-sm font-medium text-steel">Gold spot pricing source.</span>
+        </a>
+      </div>
+    </section>
+  </main>
+
+  <footer class="bg-ink px-6 py-8 text-sm text-zinc-300">
+    <div class="mx-auto flex max-w-7xl flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <p>Coin Inventory Service · PHP 8.4 · Symfony 8.1</p>
+      <p>REST API, MCP tools, Redis storage, XAUS valuation.</p>
+    </div>
+  </footer>
+
+  <script>
+    const portfolio = [
+      { name: 'Britannia', purchase: 1550.00, market: 310.97 },
+      { name: 'Golden Eagle', purchase: 2500.00, market: 570.13 },
+      { name: 'Maple Leaf', purchase: 1900.00, market: 621.94 }
+    ];
+
+    function setupCanvas(canvas) {
+      const ratio = Math.max(window.devicePixelRatio || 1, 1);
+      const rect = canvas.getBoundingClientRect();
+      canvas.width = Math.floor(rect.width * ratio);
+      canvas.height = Math.floor(rect.height * ratio);
+      const ctx = canvas.getContext('2d');
+      ctx.setTransform(ratio, 0, 0, ratio, 0, 0);
+      return { ctx, width: rect.width, height: rect.height };
+    }
+
+    function drawMarketCanvas() {
+      const canvas = document.getElementById('market-canvas');
+      const { ctx, width, height } = setupCanvas(canvas);
+      ctx.clearRect(0, 0, width, height);
+      ctx.fillStyle = '#f8fafc';
+      ctx.fillRect(0, 0, width, height);
+
+      const t = Date.now() / 1300;
+      for (let i = 0; i < 52; i++) {
+        const x = (i / 51) * width;
+        const y = height * 0.54 + Math.sin(i * 0.55 + t) * 34 + Math.cos(i * 0.19) * 42;
+        ctx.beginPath();
+        ctx.arc(x, y, i % 7 === 0 ? 5 : 2.4, 0, Math.PI * 2);
+        ctx.fillStyle = i % 7 === 0 ? 'rgba(245, 158, 11, 0.38)' : 'rgba(15, 118, 110, 0.16)';
+        ctx.fill();
+      }
+
+      ctx.lineWidth = 3;
+      ctx.strokeStyle = 'rgba(15, 118, 110, 0.32)';
+      ctx.beginPath();
+      for (let i = 0; i < 80; i++) {
+        const x = (i / 79) * width;
+        const y = height * 0.52 + Math.sin(i * 0.23 + t) * 46 + Math.cos(i * 0.08) * 26;
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.stroke();
+
+      requestAnimationFrame(drawMarketCanvas);
+    }
+
+    function drawPortfolioChart() {
+      const canvas = document.getElementById('portfolio-chart');
+      const { ctx, width, height } = setupCanvas(canvas);
+      ctx.clearRect(0, 0, width, height);
+      const max = Math.max(...portfolio.map((item) => item.purchase));
+      const barHeight = Math.max(22, Math.min(38, height / 9));
+      const gap = (height - barHeight * portfolio.length * 2) / (portfolio.length + 1);
+
+      portfolio.forEach((item, index) => {
+        const y = gap + index * (barHeight * 2 + gap);
+        const label = item.name;
+        ctx.fillStyle = '#18181b';
+        ctx.font = '700 13px system-ui, sans-serif';
+        ctx.fillText(label, 0, y - 8);
+
+        const labelWidth = 104;
+        const available = width - labelWidth - 8;
+        const purchaseWidth = available * item.purchase / max;
+        const marketWidth = available * item.market / max;
+
+        ctx.fillStyle = '#e4e4e7';
+        ctx.fillRect(labelWidth, y, available, barHeight);
+        ctx.fillStyle = '#f59e0b';
+        ctx.fillRect(labelWidth, y, purchaseWidth, barHeight);
+        ctx.fillStyle = '#0f766e';
+        ctx.fillRect(labelWidth, y + barHeight + 6, marketWidth, barHeight);
+
+        ctx.fillStyle = '#475569';
+        ctx.font = '600 12px system-ui, sans-serif';
+        ctx.fillText('buy', labelWidth - 36, y + 16);
+        ctx.fillText('now', labelWidth - 36, y + barHeight + 22);
+      });
+    }
+
+    function renderProfitTable() {
+      const root = document.getElementById('profit-table');
+      root.innerHTML = portfolio.map((item) => {
+        const diff = item.market - item.purchase;
+        const percent = diff / item.purchase * 100;
+        return `
+          <div class="grid grid-cols-[1.3fr_1fr_1fr_1fr] gap-2 px-5 py-4 text-sm">
+            <span class="font-bold text-ink">${item.name}</span>
+            <span class="text-steel">EUR ${item.purchase.toFixed(2)}</span>
+            <span class="text-steel">EUR ${item.market.toFixed(2)}</span>
+            <span class="font-bold text-loss">${diff.toFixed(2)} · ${percent.toFixed(2)}%</span>
+          </div>
+        `;
+      }).join('');
+    }
+
+    window.addEventListener('resize', drawPortfolioChart);
+    renderProfitTable();
+    drawPortfolioChart();
+    drawMarketCanvas();
+  </script>
+</body>
+</html>

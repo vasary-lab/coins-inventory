@@ -53,6 +53,11 @@ jobs:
       - name: Indexing
         run: helm repo index .deployment/repository --url https://vasary.github.io/coins-inventory
 
+      - name: Add project page
+        run: |
+          cp docs/index.html .deployment/repository/index.html
+          cp docs/CHANGELOG.md .deployment/repository/CHANGELOG.md
+
       - name: Setup Pages
         uses: actions/configure-pages@v5
 
