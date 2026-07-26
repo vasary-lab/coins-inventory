@@ -51,7 +51,7 @@ jobs:
         run: helm package -d .deployment/repository --app-version=${{ env.TAG }} --version=${{ env.TAG }} .deployment/chart
 
       - name: Indexing
-        run: helm repo index .deployment/repository --url https://vasary.github.io/coins-inventory
+        run: helm repo index .deployment/repository --url https://vasary-lab.github.io/coins-inventory
 
       - name: Add project page
         run: |

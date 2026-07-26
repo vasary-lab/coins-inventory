@@ -1,7 +1,7 @@
 replicaCount: 1
 
 image:
-  repository: ghcr.io/vasary/coins-inventory:sha-{container_version}
+  repository: ghcr.io/vasary-lab/coins-inventory:sha-{container_version}
   pullPolicy: Always
   tag: ""
 
