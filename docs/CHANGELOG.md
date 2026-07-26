@@ -4,6 +4,15 @@
 All notable changes to this project will be documented in this file.
 <!--- END HEADER -->
 
+## 1.2.0 (2026-07-26)
+
+### Features
+
+* Add mcp inventory tools and profitability report (b1629e1)
+
+
+---
+
 ## 1.1.1 (2025-03-26)
 
 ### Tests
