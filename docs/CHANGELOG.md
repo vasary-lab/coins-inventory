@@ -4,6 +4,15 @@
 All notable changes to this project will be documented in this file.
 <!--- END HEADER -->
 
+## 1.2.1 (2026-07-26)
+
+### Documentation
+
+* Add github pages project page (8de5f78)
+
+
+---
+
 ## 1.2.0 (2026-07-26)
 
 ### Features
