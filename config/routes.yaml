@@ -12,3 +12,12 @@ api_application_get:
   path: /api/inventory
   controller: Presentation\API\HTTP\Coin\FindCoinsController
   methods: GET
+
+api_inventory_profitability:
+  path: /api/inventory/profitability
+  controller: Presentation\API\HTTP\Coin\InventoryProfitabilityController
+  methods: GET
+
+mcp:
+  resource: .
+  type: mcp

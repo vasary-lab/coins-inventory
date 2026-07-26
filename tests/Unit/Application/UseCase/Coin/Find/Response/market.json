@@ -1,25 +1,8 @@
 {
-  "timestamp": 1734423210,
-  "metal": "XAU",
-  "currency": "EUR",
-  "exchange": "FOREXCOM",
-  "symbol": "FOREXCOM:XAUEUR",
-  "prev_close_price": 2523.77,
-  "open_price": 2523.77,
-  "low_price": 2519.265,
-  "high_price": 2530.025,
-  "open_time": 1734393600,
-  "price": 2525.865,
-  "ch": 2.09,
-  "chp": 0.08,
-  "ask": 2526.29,
-  "bid": 2525.39,
-  "price_gram_24k": 81.2084,
-  "price_gram_22k": 74.4411,
-  "price_gram_21k": 71.0574,
-  "price_gram_20k": 67.6737,
-  "price_gram_18k": 60.9063,
-  "price_gram_16k": 54.139,
-  "price_gram_14k": 47.3716,
-  "price_gram_10k": 33.8369
+  "xau": {
+    "price": 20,
+    "currency": "EUR",
+    "unit": "gram"
+  },
+  "source": "xaus.com"
 }

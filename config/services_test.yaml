@@ -18,7 +18,7 @@ services:
     Domain\Coin\Factory\CoinFactory:
         public: true
 
-    guzzle.gold-api.client:
+    guzzle.xaus.client:
         class: GuzzleHttp\Client
         arguments:
             $config:
@@ -28,7 +28,7 @@ services:
         class: GuzzleHttp\Handler\MockHandler
 
     test.handler:
-        class: Infrastructure\GoldAPI\Test\Mock\Handler
+        class: Infrastructure\XAUS\Test\Mock\Handler
         arguments:
             $handler: '@test.handler.mock'
 

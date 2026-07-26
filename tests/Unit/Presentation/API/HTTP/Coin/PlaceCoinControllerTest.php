@@ -16,6 +16,7 @@ use Infrastructure\Test\TestCase;
 use Infrastructure\Validation\ConstraintsBuilder;
 use Infrastructure\Validation\ValidationService;
 use PHPUnit\Framework\Attributes\DataProvider;
+use Presentation\Coin\CoinInputValidator;
 
 final class PlaceCoinControllerTest extends TestCase
 {
@@ -44,7 +45,8 @@ final class PlaceCoinControllerTest extends TestCase
             useCase: $useCase,
             coinRequest: $coinRequest,
             validator: $validator,
-            constraintsBuilder: new ConstraintsBuilder()
+            constraintsBuilder: new ConstraintsBuilder(),
+            coinInputValidator: new CoinInputValidator()
         );
 
         $this->assertInstanceOf(JsonResponse::class, $response);
@@ -109,7 +111,8 @@ final class PlaceCoinControllerTest extends TestCase
             useCase: $useCase,
             coinRequest: $coinRequest,
             validator: $validator,
-            constraintsBuilder: new ConstraintsBuilder()
+            constraintsBuilder: new ConstraintsBuilder(),
+            coinInputValidator: new CoinInputValidator()
         );
 
         $this->assertInstanceOf(JsonResponse::class, $response);

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Infrastructure\GoldAPI\Guzzle;
+namespace Infrastructure\XAUS\Guzzle;
 
 use Domain\Common\Enum\Metal;
 use Domain\Common\ValueObject\Money;
@@ -13,7 +13,7 @@ use GuzzleHttp\Psr7\Response;
 use Infrastructure\Money\Service\MoneyInitializerService;
 use OutOfBoundsException;
 
-final readonly class GoldAPIRepository implements MarketRepositoryInterface
+final readonly class XausRepository implements MarketRepositoryInterface
 {
     public function __construct(
         private ClientInterface $client,
@@ -21,13 +21,11 @@ final readonly class GoldAPIRepository implements MarketRepositoryInterface
     ) {
     }
 
-
     public function metalPricePerGram(Metal $metal, int $karat, string $currency): Money
     {
-        $metalCode = $this->resolveMetalCode($metal);
-        $url = "{$metalCode}/{$currency}";
+        $this->resolveMetalCode($metal);
 
-        return $this->fetchMetalPrice($url, $karat, $currency);
+        return $this->fetchMetalPrice($karat, $currency);
     }
 
     private function resolveMetalCode(Metal $metal): string
@@ -37,12 +35,17 @@ final readonly class GoldAPIRepository implements MarketRepositoryInterface
         };
     }
 
-    private function fetchMetalPrice(string $url, int $karat, string $currency): Money
+    private function fetchMetalPrice(int $karat, string $currency): Money
     {
-        return $this->client->getAsync($url)
+        return $this->client->getAsync('spot', [
+            'query' => [
+                'currency' => $currency,
+                'unit' => 'gram',
+            ],
+        ])
             ->then(
-                fn(Response $response) => $this->parseResponse($response, $karat, $currency),
-                fn(GuzzleException | OutOfBoundsException $e) => $this->handleRequestException($e, $currency)
+                fn (Response $response) => $this->parseResponse($response, $karat, $currency),
+                fn (GuzzleException | OutOfBoundsException $e) => $this->handleRequestException($e, $currency)
             )
             ->wait();
     }
@@ -50,9 +53,12 @@ final readonly class GoldAPIRepository implements MarketRepositoryInterface
     private function parseResponse(Response $response, int $karat, string $currency): Money
     {
         $data = json_decode($response->getBody()->getContents(), true);
-        $key = "price_gram_{$karat}k";
 
-        $price = isset($data[$key]) ? (int) round($data[$key] * 100) : 0;
+        if (!isset($data['xau']['price'])) {
+            return $this->handleRequestException(new OutOfBoundsException('Missing XAU gram price'), $currency);
+        }
+
+        $price = (int) round($data['xau']['price'] * $karat / 24 * 100);
 
         return $this->moneyInitializer->create($price, $currency);
     }

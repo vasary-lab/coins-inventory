@@ -9,6 +9,8 @@ The **Coin Inventory Service** is a microservice for managing an inventory of in
 - Layered architecture with clear separation of concerns (Application, Domain, Infrastructure, Presentation)
 - Uses Redis for fast, in-memory data operations
 - REST-like API powered by Symfony 8.1 components
+- MCP server powered by Symfony MCP Bundle
+- Gold spot valuation powered by XAUS
 - Release process with changelog generation
 - Containerized for local development via Docker Compose
 - Includes CI-friendly test and code quality tooling
@@ -55,6 +57,7 @@ Run these from the root of the project:
 - `predis/predis` – Redis client
 - `moneyphp/money` – Value object for monetary calculations
 - `ramsey/uuid` – UUID generation
+- `symfony/mcp-bundle` – MCP server integration
 - `symfony/*` – Framework and support components
 
 ### 🧪 Dev & Tooling
@@ -71,6 +74,34 @@ Run these from the root of the project:
 The project follows a **Layered Architecture** pattern:
 
 This approach ensures loose coupling between business logic and infrastructure, enabling better maintainability and testing.
+
+---
+
+## 🔌 MCP
+
+The service exposes the coin inventory use cases through MCP tools:
+
+- `coins_inventory_list` – lists all coins with calculated market value fields
+- `coins_inventory_place` – adds a coin to the inventory
+- `coins_inventory_profitability` – calculates profit and loss per coin and portfolio totals grouped by currency
+
+STDIO server:
+
+```bash
+bin/console mcp:server
+```
+
+HTTP endpoint:
+
+```text
+/_mcp
+```
+
+Debug registered MCP capabilities:
+
+```bash
+bin/console debug:mcp
+```
 
 ---
 

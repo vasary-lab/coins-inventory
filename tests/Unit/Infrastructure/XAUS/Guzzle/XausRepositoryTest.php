@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Infrastructure\GoldenAPI\Guzzle;
+namespace Infrastructure\XAUS\Guzzle;
 
 use Domain\Common\Enum\Metal;
 use GuzzleHttp\Client;
@@ -11,27 +11,32 @@ use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\Psr7\Request;
 use GuzzleHttp\Psr7\Response;
-use Infrastructure\GoldAPI\Guzzle\GoldAPIRepository;
 use Infrastructure\Money\Service\MoneyInitializerService;
 use Infrastructure\Test\TestCase;
 
-final class GoldenAPIRepositoryTest extends TestCase
+final class XausRepositoryTest extends TestCase
 {
-    public function testShouldReturnGoldenAPISuccessfullyResult(): void
+    public function testShouldReturnXausSuccessfullyResult(): void
     {
-        $clientMock = $this->getClientMock(new Response(200, body: json_encode(['price_gram_22k' => 100])));
+        $clientMock = $this->getClientMock(new Response(200, body: json_encode([
+            'xau' => [
+                'currency' => 'EUR',
+                'price' => 120,
+                'unit' => 'gram',
+            ],
+        ])));
 
         $moneyInitializer = new MoneyInitializerService();
 
-        $repository = new GoldAPIRepository($clientMock, $moneyInitializer);
+        $repository = new XausRepository($clientMock, $moneyInitializer);
 
         $price = $repository->metalPricePerGram(Metal::Gold, 22, 'EUR');
 
-        $this->assertEquals('100.00', $price->getAmount());
+        $this->assertEquals('110.00', $price->getAmount());
         $this->assertEquals('EUR', $price->getCurrency());
     }
 
-    public function testShouldReturnZeroWhenGoldenAPIFails(): void
+    public function testShouldReturnZeroWhenXausFails(): void
     {
         $clientMock = $this->getClientMock(
             new RequestException('Synthetic exception', new Request('GET', 'test'))
@@ -39,7 +44,7 @@ final class GoldenAPIRepositoryTest extends TestCase
 
         $moneyInitializer = new MoneyInitializerService();
 
-        $repository = new GoldAPIRepository($clientMock, $moneyInitializer);
+        $repository = new XausRepository($clientMock, $moneyInitializer);
 
         $price = $repository->metalPricePerGram(Metal::Gold, 22, 'EUR');
 

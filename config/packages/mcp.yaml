@@ -1,0 +1,12 @@
+mcp:
+    app: 'coins-inventory'
+    version: '1.0.0'
+    description: 'MCP server for coin inventory controllers and use cases.'
+    instructions: |
+        Use this server to inspect the coin inventory and add new coins through the same application use cases as the HTTP API.
+        Monetary purchasePrice input is expected in minor currency units.
+    client_transports:
+        stdio: true
+        http: true
+    http:
+        path: /_mcp

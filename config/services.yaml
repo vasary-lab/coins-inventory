@@ -39,19 +39,19 @@ services:
     Predis\Client: ['%redis.config.connection%', '%redis.config.options%']
     Predis\ClientInterface: '@Predis\Client'
 
-    Infrastructure\GoldAPI\Guzzle\GoldAPIRepository:
-        arguments: ["@guzzle.gold-api.client"]
+    Domain\Market\Repository\MarketRepositoryInterface:
+        alias: Infrastructure\XAUS\Guzzle\XausRepository
 
-    guzzle.gold-api.client:
+    Infrastructure\XAUS\Guzzle\XausRepository:
+        arguments: ["@guzzle.xaus.client"]
+
+    guzzle.xaus.client:
         class: GuzzleHttp\Client
         arguments:
             $config:
-                base_uri: 'https://www.goldapi.io/api/'
+                base_uri: 'https://xaus.com/api/v1/'
                 timeout: 10
                 handler: '@guzzle.handler'
-                headers:
-                    x-access-token: 'goldapi-26dsm4r29ls3-io'
-                    Content-Type: 'application/json'
 
     guzzle.handler:
         class: GuzzleHttp\HandlerStack

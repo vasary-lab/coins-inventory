@@ -38,7 +38,7 @@ final class FindAllCoinsTest extends TestCase
         $this->assertEquals(50, $coin->nominal);
         $this->assertEquals('unitedKingdom', $coin->country);
         $this->assertEquals(2024, $coin->year);
-        $this->assertEquals(1262.69, $coin->marketMetalPriceValue);
+        $this->assertEquals(310.97, $coin->marketMetalPriceValue);
     }
 
     protected function setUp(): void
@@ -56,6 +56,6 @@ final class FindAllCoinsTest extends TestCase
         $handlerStack = HandlerStack::create($mock);
         $mockClient = new Client(['handler' => $handlerStack]);
 
-        $this->getContainer()->set('guzzle.gold-api.client', $mockClient);
+        $this->getContainer()->set('guzzle.xaus.client', $mockClient);
     }
 }

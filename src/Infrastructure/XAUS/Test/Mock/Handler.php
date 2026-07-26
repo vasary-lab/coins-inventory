@@ -2,16 +2,16 @@
 
 declare(strict_types=1);
 
-namespace Infrastructure\GoldAPI\Test\Mock;
+namespace Infrastructure\XAUS\Test\Mock;
 
 use GuzzleHttp\Handler\MockHandler;
 use GuzzleHttp\Promise\PromiseInterface;
-use Psr\Http\Message\RequestInterface;
 use GuzzleHttp\Psr7\Response;
+use Psr\Http\Message\RequestInterface;
 
 final class Handler
 {
-    private const string RESPONSE_BODY = '{"price_gram_22k": "10", "price_gram_24k": "20"}';
+    private const string RESPONSE_BODY = '{"xau": {"price": 20, "currency": "EUR", "unit": "gram"}}';
 
     public function __construct(private MockHandler $handler)
     {
