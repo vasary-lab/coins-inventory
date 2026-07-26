@@ -6,7 +6,7 @@ namespace Infrastructure\Lock\Service;
 
 use Application\Service\LockService\LockServiceInterface;
 use Closure;
-use malkusch\lock\mutex\PredisMutex;
+use Malkusch\Lock\Mutex\RedisMutex;
 use Predis\Client;
 
 final readonly class LockService implements LockServiceInterface
@@ -21,6 +21,6 @@ final readonly class LockService implements LockServiceInterface
     {
         $id = str_replace('{id}', $key, self::NAMESPACE);
 
-        return new PredisMutex([$this->client], $id)->synchronized($closure);
+        return new RedisMutex($this->client, $id)->synchronized($closure);
     }
 }

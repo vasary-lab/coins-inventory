@@ -8,7 +8,7 @@ ENV CADDY_GLOBAL_OPTIONS="auto_https off"
 RUN apk add --no-cache icu-dev autoconf g++ make linux-headers git && \
     pecl install xdebug  && \
     docker-php-ext-configure intl && \
-    docker-php-ext-install intl  && \
+    docker-php-ext-install bcmath intl  && \
     apk del autoconf g++ make && \
     rm -rf /var/cache/apk/*
 

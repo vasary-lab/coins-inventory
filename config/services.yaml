@@ -31,6 +31,11 @@ services:
     Presentation\:
         resource: '../src/Presentation'
 
+    Presentation\Console\RestoreInventory\SetInventoryCommand:
+        autoconfigure: false
+        tags:
+            - { name: 'console.command', command: 'coin-inventory:restore', description: 'Clears coin inventory and sets prepared collection' }
+
     Predis\Client: ['%redis.config.connection%', '%redis.config.options%']
     Predis\ClientInterface: '@Predis\Client'
 

@@ -23,6 +23,7 @@
 
     <testsuites>
         <testsuite name="Tests">
+            <directory>Feature</directory>
             <directory>Unit</directory>
         </testsuite>
     </testsuites>

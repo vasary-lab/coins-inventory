@@ -3,9 +3,6 @@ services:
         autowire: true
         autoconfigure: true
 
-    Tests\Behat\Context\:
-        resource: '../tests/Behat/Context'
-
     Infrastructure\Persistence\Redis\Repository\CoinRepository:
         public: true
 
@@ -20,12 +17,6 @@ services:
 
     Domain\Coin\Factory\CoinFactory:
         public: true
-
-    matcher:
-        class: Coduo\PHPMatcher\PHPMatcher
-
-    Tests\Behat\Context\PlaceCoinContext:
-        arguments: ['@matcher']
 
     guzzle.gold-api.client:
         class: GuzzleHttp\Client
@@ -45,4 +36,3 @@ services:
         class: GuzzleHttp\HandlerStack
         factory: [ 'GuzzleHttp\HandlerStack', 'create' ]
         arguments: [ '@test.handler' ]
-

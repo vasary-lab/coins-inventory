@@ -36,6 +36,9 @@ final class PlaceCoinControllerTest extends TestCase
             ->willReturn(json_encode($requestData));
 
         $useCase = $this->createMock(PlaceCoinUseCase::class);
+        $useCase
+            ->expects($this->never())
+            ->method('__invoke');
 
         $response = $controller->__invoke(
             useCase: $useCase,

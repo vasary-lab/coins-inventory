@@ -7,9 +7,9 @@ namespace Infrastructure\Test;
 use Infrastructure\Persistence\Redis\Repository\CoinRepository;
 use Infrastructure\Test\Fixture\CoinFixture;
 use Predis\ClientInterface;
-use Symfony\Bundle\FrameworkBundle\Test\KernelTestCase;
+use Symfony\Bundle\FrameworkBundle\Test\WebTestCase;
 
-abstract class TestCase extends KernelTestCase
+abstract class TestCase extends WebTestCase
 {
     protected function setUp(): void
     {

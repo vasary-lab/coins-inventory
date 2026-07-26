@@ -30,7 +30,8 @@ final readonly class Money implements DomainMoneyInterface
 
     public function multiply(float $multiplier): DomainMoneyInterface
     {
-        $newMoney = $this->money->multiply($multiplier);
+        $newMoney = $this->money->multiply((string) $multiplier);
+
         return new self($newMoney->getAmount(), $newMoney->getCurrency()->getCode(), $this->formatter);
     }
 }

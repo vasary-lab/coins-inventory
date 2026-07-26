@@ -6,7 +6,12 @@ namespace Presentation\Console\RestoreInventory;
 
 use Application\UseCase\Coin\RestoreInventory\RestoreInventoryUseCase;
 use Infrastructure\Framework\Symfony\Command\AbstractCoinInventory;
+use Symfony\Component\Console\Attribute\AsCommand;
 
+#[AsCommand(
+    name: 'coin-inventory:restore',
+    description: 'Clears coin inventory and sets prepared collection'
+)]
 final class SetInventoryCommand extends AbstractCoinInventory
 {
     public function __construct(private readonly RestoreInventoryUseCase $restoreInventoryUseCase)

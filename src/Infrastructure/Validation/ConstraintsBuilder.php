@@ -19,14 +19,17 @@ final class ConstraintsBuilder
 
     public function length(string $key, int $min = 0, int $max = 0): self
     {
-        $this->constraints[$key][] = new Assert\Length(['min' => $min, 'max' => $max]);
+        $this->constraints[$key][] = new Assert\Length(
+            min: 0 === $min ? null : $min,
+            max: 0 === $max ? null : $max
+        );
 
         return $this;
     }
 
     public function choice(string $key, string ...$options): self
     {
-        $this->constraints[$key][] = new Assert\Choice(['choices' => $options]);
+        $this->constraints[$key][] = new Assert\Choice(choices: $options);
 
         return $this;
     }
@@ -54,7 +57,7 @@ final class ConstraintsBuilder
 
     public function range(string $key, float|int $min = 0.0, float|int $max = 0.0): self
     {
-        $this->constraints[$key][] = new Assert\Range(['min' => $min, 'max' => $max]);
+        $this->constraints[$key][] = new Assert\Range(min: $min, max: $max);
 
         return $this;
     }

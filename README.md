@@ -8,7 +8,7 @@ The **Coin Inventory Service** is a microservice for managing an inventory of in
 
 - Layered architecture with clear separation of concerns (Application, Domain, Infrastructure, Presentation)
 - Uses Redis for fast, in-memory data operations
-- REST-like API powered by Symfony 7.1 components
+- REST-like API powered by Symfony 8.1 components
 - Release process with changelog generation
 - Containerized for local development via Docker Compose
 - Includes CI-friendly test and code quality tooling
@@ -39,7 +39,7 @@ Run these from the root of the project:
 | `make stop`       | Stops running containers                |
 | `make restart`    | Restarts the application                |
 | `make shell`      | Opens a shell inside the app container  |
-| `make test`       | Runs PHPUnit and Behat tests            |
+| `make test`       | Runs PHPUnit tests                      |
 | `make code-style` | Checks code style with PHP_CodeSniffer  |
 | `make release`    | Creates a new release tag and changelog |
 | `make help`       | Displays available make targets         |
@@ -59,8 +59,7 @@ Run these from the root of the project:
 
 ### 🧪 Dev & Tooling
 
-- `phpunit/phpunit` – Unit testing
-- `behat/behat` – BDD framework
+- `phpunit/phpunit` – Unit and feature testing
 - `squizlabs/php_codesniffer` – Code style checks
 - `captainhook/captainhook` – Git hooks automation
 - `php-conventional-changelog` – Conventional changelog generator

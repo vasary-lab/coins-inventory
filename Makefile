@@ -29,16 +29,16 @@ stop:
 	@docker compose -f $(DOCKER_COMPOSE_FILE) down
 
 shell:
-	@docker compose -f $(DOCKER_COMPOSE_FILE) exec -it coin-service sh
+	@docker compose -f $(DOCKER_COMPOSE_FILE) run --rm --no-deps coin-service sh
 
 test:
-	@docker compose -f $(DOCKER_COMPOSE_FILE) exec -it coin-service vendor/bin/phpunit -c tests/phpunit.xml
-	@docker compose -f $(DOCKER_COMPOSE_FILE) exec -it coin-service vendor/bin/behat -c tests/behat.yml
+	@docker compose -f $(DOCKER_COMPOSE_FILE) up -d coin-db
+	@docker compose -f $(DOCKER_COMPOSE_FILE) run -T --rm --no-deps coin-service vendor/bin/phpunit -c tests/phpunit.xml --testsuite Tests
 
 code-style:
-	@docker compose -f $(DOCKER_COMPOSE_FILE) exec -it coin-service vendor/bin/phpcs
+	@docker compose -f $(DOCKER_COMPOSE_FILE) run -T --rm --no-deps coin-service vendor/bin/phpcs
 
 release:
-	@docker compose -f $(DOCKER_COMPOSE_FILE) exec -it coin-service composer code:release
+	@docker compose -f $(DOCKER_COMPOSE_FILE) run -T --rm --no-deps coin-service composer code:release
 
 restart: stop start
