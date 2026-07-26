@@ -4,6 +4,15 @@
 All notable changes to this project will be documented in this file.
 <!--- END HEADER -->
 
+## 1.2.2 (2026-07-26)
+
+### Bug Fixes
+
+* Use github token for ghcr publishing (b95ed72)
+
+
+---
+
 ## 1.2.1 (2026-07-26)
 
 ### Documentation
