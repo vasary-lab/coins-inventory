@@ -181,7 +181,7 @@ final readonly class Inventory
             purchaseDate: $this->dateTimeInitializerService->create('2025-01-16T14:29:56+02:00'),
         );
 
-        new Coin(
+        yield new Coin(
             id: new Id('0da0c9d7-3f4d-42bd-81fc-2860bdd9ff60'),
             name: $this->charInitializerService->create('Australian Kangaroo 2025'),
             description: $this->charInitializerService->create('Investment gold coin from Australia'),
