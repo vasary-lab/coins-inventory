@@ -77,7 +77,7 @@
         "post-update-cmd": [
             "@auto-scripts"
         ],
-        "code:release": "vendor/bin/conventional-changelog --commit"
+        "code:release": "php scripts/release.php"
     },
     "conflict": {
         "symfony/symfony": "*"
