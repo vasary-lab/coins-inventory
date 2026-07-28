@@ -8,6 +8,17 @@ All notable changes to this project will be documented in this file.
 
 ### Chores
 
+* Release (0bd7615)
+* Tmp fix (0c0c7d8)
+* Refactoring (2d60a3b)
+
+
+---
+
+## 1.2.4 (2026-07-28)
+
+### Chores
+
 * Tmp fix (0c0c7d8)
 * Refactoring (2d60a3b)
 
