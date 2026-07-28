@@ -4,6 +4,16 @@
 All notable changes to this project will be documented in this file.
 <!--- END HEADER -->
 
+## 1.2.4 (2026-07-28)
+
+### Chores
+
+* Tmp fix (0c0c7d8)
+* Refactoring (2d60a3b)
+
+
+---
+
 ## 1.2.2 (2026-07-26)
 
 ### Bug Fixes
