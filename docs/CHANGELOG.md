@@ -4,6 +4,15 @@
 All notable changes to this project will be documented in this file.
 <!--- END HEADER -->
 
+## 1.2.6 (2026-08-02)
+
+### Bug Fixes
+
+* **mcp:** Return inventory list as structured content record (8b7edb8)
+
+
+---
+
 ## 1.2.5 (2026-07-28)
 
 ### Chores
