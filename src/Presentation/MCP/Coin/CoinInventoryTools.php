@@ -29,7 +29,7 @@ final readonly class CoinInventoryTools
     /**
      * Returns all coins in the inventory with calculated market value fields.
      *
-     * @return array<int, array<string, float|int|string>>
+     * @return array{coins: array<int, array<string, float|int|string>>}
      */
     #[McpTool(
         name: 'coins_inventory_list',
@@ -37,10 +37,12 @@ final readonly class CoinInventoryTools
     )]
     public function listCoins(): array
     {
-        return array_map(
-            $this->coinToArray(...),
-            iterator_to_array(($this->findAllCoins)())
-        );
+        return [
+            'coins' => array_map(
+                $this->coinToArray(...),
+                iterator_to_array(($this->findAllCoins)())
+            ),
+        ];
     }
 
     /**

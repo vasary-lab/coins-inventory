@@ -11,10 +11,11 @@ use Application\UseCase\Coin\Profitability\CalculateInventoryProfitabilityUseCas
 use Domain\Common\Enum\Country;
 use Domain\Common\Enum\Metal;
 use Generator;
-use Infrastructure\Test\TestCase;
 use Infrastructure\Validation\ConstraintsBuilder;
 use Infrastructure\Validation\ValidationService;
+use PHPUnit\Framework\TestCase;
 use Presentation\Coin\CoinInputValidator;
+use Symfony\Component\Validator\Validation;
 
 final class CoinInventoryToolsTest extends TestCase
 {
@@ -32,12 +33,15 @@ final class CoinInventoryToolsTest extends TestCase
             findAllCoins: $findAllCoins,
             placeCoin: $this->unusedPlaceCoinUseCase(),
             calculateInventoryProfitability: $this->unusedCalculateInventoryProfitabilityUseCase(),
-            validator: $this->getContainer()->get(ValidationService::class),
+            validator: $this->validationService(),
             constraintsBuilder: new ConstraintsBuilder(),
             coinInputValidator: new CoinInputValidator()
         );
 
-        $this->assertSame([$this->coinData()], $tools->listCoins());
+        $result = $tools->listCoins();
+
+        $this->assertMcpStructuredContentRecord($result);
+        $this->assertSame(['coins' => [$this->coinData()]], $result);
     }
 
     public function testShouldPlaceCoin(): void
@@ -52,29 +56,32 @@ final class CoinInventoryToolsTest extends TestCase
             findAllCoins: $this->unusedFindAllCoinsUseCase(),
             placeCoin: $placeCoin,
             calculateInventoryProfitability: $this->unusedCalculateInventoryProfitabilityUseCase(),
-            validator: $this->getContainer()->get(ValidationService::class),
+            validator: $this->validationService(),
             constraintsBuilder: new ConstraintsBuilder(),
             coinInputValidator: new CoinInputValidator()
         );
 
+        $result = $tools->placeCoin(
+            name: 'name',
+            description: 'description',
+            purchasePrice: 1000,
+            purchaseCurrency: 'EUR',
+            metal: 'Gold',
+            weight: 10,
+            purity: 99.999,
+            nominal: 25,
+            country: 'usa',
+            year: 2015,
+            purchaseDate: '2023-12-01'
+        );
+
+        $this->assertMcpStructuredContentRecord($result);
         $this->assertSame(
             [
                 'coin' => $this->coinData(),
                 'status' => 'created',
             ],
-            $tools->placeCoin(
-                name: 'name',
-                description: 'description',
-                purchasePrice: 1000,
-                purchaseCurrency: 'EUR',
-                metal: 'Gold',
-                weight: 10,
-                purity: 99.999,
-                nominal: 25,
-                country: 'usa',
-                year: 2015,
-                purchaseDate: '2023-12-01'
-            )
+            $result
         );
     }
 
@@ -89,11 +96,26 @@ final class CoinInventoryToolsTest extends TestCase
             findAllCoins: $this->unusedFindAllCoinsUseCase(),
             placeCoin: $placeCoin,
             calculateInventoryProfitability: $this->unusedCalculateInventoryProfitabilityUseCase(),
-            validator: $this->getContainer()->get(ValidationService::class),
+            validator: $this->validationService(),
             constraintsBuilder: new ConstraintsBuilder(),
             coinInputValidator: new CoinInputValidator()
         );
 
+        $result = $tools->placeCoin(
+            name: 'name',
+            description: 'description',
+            purchasePrice: 1000,
+            purchaseCurrency: 'EUR',
+            metal: 'Gold',
+            weight: 10,
+            purity: 99.999,
+            nominal: 25,
+            country: 'mars',
+            year: 2015,
+            purchaseDate: '2023-12-01'
+        );
+
+        $this->assertMcpStructuredContentRecord($result);
         $this->assertSame(
             [
                 'status' => 'invalid',
@@ -101,19 +123,7 @@ final class CoinInventoryToolsTest extends TestCase
                     ['field' => '[country]', 'message' => 'The value you selected is not a valid choice.'],
                 ],
             ],
-            $tools->placeCoin(
-                name: 'name',
-                description: 'description',
-                purchasePrice: 1000,
-                purchaseCurrency: 'EUR',
-                metal: 'Gold',
-                weight: 10,
-                purity: 99.999,
-                nominal: 25,
-                country: 'mars',
-                year: 2015,
-                purchaseDate: '2023-12-01'
-            )
+            $result
         );
     }
 
@@ -134,11 +144,14 @@ final class CoinInventoryToolsTest extends TestCase
             findAllCoins: $this->unusedFindAllCoinsUseCase(),
             placeCoin: $this->unusedPlaceCoinUseCase(),
             calculateInventoryProfitability: $calculateInventoryProfitability,
-            validator: $this->getContainer()->get(ValidationService::class),
+            validator: $this->validationService(),
             constraintsBuilder: new ConstraintsBuilder(),
             coinInputValidator: new CoinInputValidator()
         );
 
+        $result = $tools->profitability();
+
+        $this->assertMcpStructuredContentRecord($result);
         $this->assertSame(
             [
                 'coins' => [],
@@ -146,7 +159,7 @@ final class CoinInventoryToolsTest extends TestCase
                     'byCurrency' => [],
                 ],
             ],
-            $tools->profitability()
+            $result
         );
     }
 
@@ -223,5 +236,18 @@ final class CoinInventoryToolsTest extends TestCase
             ->method('__invoke');
 
         return $useCase;
+    }
+
+    private function validationService(): ValidationService
+    {
+        return new ValidationService(Validation::createValidator());
+    }
+
+    /**
+     * MCP clients validate structuredContent as a JSON object, not a top-level array.
+     */
+    private function assertMcpStructuredContentRecord(array $result): void
+    {
+        $this->assertFalse(array_is_list($result));
     }
 }
